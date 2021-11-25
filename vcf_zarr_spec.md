@@ -2,7 +2,7 @@
 
 ***Version 0.1***
 
-This document is a technical specification for VCF Zarr, an equivalent of VCF that uses Zarr storage.
+This document is a technical specification for VCF Zarr, a means of encoding VCF data in chunked-columnar form using the Zarr format.
 
 This specification depends on definitions and terminology from [The Variant Call Format Specification, VCFv4.3 and BCFv2.2](https://samtools.github.io/hts-specs/VCFv4.3.pdf),
 and [Zarr storage specification version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html).
