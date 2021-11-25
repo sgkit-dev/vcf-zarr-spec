@@ -28,11 +28,11 @@ The VCF Zarr store contains the following mandatory attributes:
 | `contigs`          | A list of strings of the contig IDs in the same order as specified in the header.    |
 | `filters`          | A list of strings of the filters in the same order as specified in the header, except for `PASS`, which is always first. |
 
-The `contigs` attribute plays the same role as the dictionary of contigs in BCF, providing a way of encoding a contig (in the `variant_contig` array) with an integer offset into the `contigs` list.
+The `contigs` attribute plays the same role as the dictionary of contigs in BCF, providing a way of encoding a contig (in the `variant_contig` array) with a (zero-based) integer offset into the `contigs` list.
 
 ## VCF Zarr arrays
 
-Each VCF field is stored in a separate Zarr array. This specification only mandates the path, shape, dimension names, and dtype of each array. Other array metadata, including chunks, compression, layout order is not specified here.
+Each VCF field is stored in a separate Zarr array. This specification only mandates the path, shape, dimension names, and general dtype of each array. Other array metadata, including chunks, compression, layout order is not specified here.
 
 ### Zarr dtypes
 
@@ -63,7 +63,7 @@ Missing values indicate the value is absent, and fill values are used to pad var
 
 There is no need for missing or fill values for the `bool` dtype, since Type=Flag fields can only appear in INFO fields, and they always have Number=0.
 
-In addition to encoding the missing and fill status in the values, some implementations may choose to store this information in accompanying Zarr arrays of the same shape. This make masking out missing data easier for the user, since they don't have to know how missing and fill values are encoded for each type.
+In addition to encoding the missing and fill status in the values, some implementations may choose to store this information in accompanying Zarr arrays of the same shape. This can make masking out missing data easier for the user, since they don't have to know how missing and fill values are encoded for each type.
 
 An array called `<name>` may have an accompanying array called `<name>_mask` with dtype `bool`, where true values indicate that the corresponding values are missing or fill values, and should be masked out. There may also be an accompanying array called `<name>_fill` with dtype `bool`, where true values indicate that the corresponding values are fill values.
 
@@ -100,9 +100,9 @@ The fixed VCF fields `CHROM`, `POS`, `ID`, `REF`, `ALT`, `QUAL`, and `FILTER` ar
 | `QUAL`       | `variant_quality`  | `(variants)`          | `[variants]`          | `float` |
 | `FILTER`     | `variant_filter`   | `(variants, filters)` | `[variants, filters]` | `bool`  |
 
-Each value in the `variant_contig` array is an integer offset into the `contigs` attribute list.
+Each value in the `variant_contig` array is a zero-based integer offset into the `contigs` attribute list.
 
-The `variant_filter` array contains a true value at position `i` if the filter at position `i` in the `filters` attribute list applies for a given variant. If not filters have been applied
+The `variant_filter` array contains a true value at position `i` if the filter at position `i` in the `filters` attribute list applies for a given variant. If no filters have been applied
 for a variant, all values are false.
 
 ### INFO fields
