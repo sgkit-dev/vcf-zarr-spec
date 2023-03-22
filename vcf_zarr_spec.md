@@ -1,6 +1,6 @@
 # VCF Zarr specification
 
-***Version 0.1***
+***Version 0.2***
 
 This document is a technical specification for VCF Zarr, a means of encoding VCF data in chunked-columnar form using the Zarr format.
 
@@ -23,12 +23,8 @@ The VCF Zarr store contains the following mandatory attributes:
 
 | Key                | Value                                                                                |
 |--------------------|--------------------------------------------------------------------------------------|
-| `vcf_zarr_version` | `0.1`                                                                                |
+| `vcf_zarr_version` | `0.2`                                                                                |
 | `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
-| `contigs`          | A list of strings of the contig IDs in the same order as specified in the header.    |
-| `filters`          | A list of strings of the filters in the same order as specified in the header, except for `PASS`, which is always first. |
-
-The `contigs` attribute plays the same role as the dictionary of contigs in BCF, providing a way of encoding a contig (in the `variant_contig` array) with a (zero-based) integer offset into the `contigs` list.
 
 ## VCF Zarr arrays
 
@@ -81,6 +77,7 @@ The reserved dimension names and their sizes are listed in the following table, 
 | `alleles`      | The maximum number of alleles for any record in the VCF. | R |
 | `alt_alleles`  | The maximum number of alternate non-reference alleles for any record in the VCF. | A |
 | `genotypes`    | The maximum number of genotypes for any record in the VCF. | G |
+| `contigs`      | The number of contigs in the VCF. | |
 | `filters`      | The number of filters in the VCF. | |
 
 For fixed-size Number fields (e.g. Number=2) or unknown (Number=.), the dimension name can be any unique name that is not one of the reserved dimension names.
@@ -100,9 +97,9 @@ The fixed VCF fields `CHROM`, `POS`, `ID`, `REF`, `ALT`, `QUAL`, and `FILTER` ar
 | `QUAL`       | `variant_quality`  | `(variants)`          | `[variants]`          | `float` |
 | `FILTER`     | `variant_filter`   | `(variants, filters)` | `[variants, filters]` | `bool`  |
 
-Each value in the `variant_contig` array is a zero-based integer offset into the `contigs` attribute list.
+Each value in the `variant_contig` array is a zero-based integer offset into the `contig_id` array.
 
-The `variant_filter` array contains a true value at position `i` if the filter at position `i` in the `filters` attribute list applies for a given variant. If no filters have been applied
+The `variant_filter` array contains a true value at position `i` if the filter at position `i` in the `filter_id` array applies for a given variant. If no filters have been applied
 for a variant, all values are false.
 
 ### INFO fields
@@ -117,6 +114,24 @@ A **Genotype (GT) field** is stored as a three-dimensional Zarr array at a path 
 
 To indicate phasing, there is an optional accompanying Zarr array at a path with name `call_genotype_phased`, of shape `(variants, samples)`, with dtype `bool`. Values are true if a call is phased, false if unphased (or not present). If the array is not present then all calls are unphased.
 
+### Contig information
+
+Contig IDs are stored in a one-dimensional Zarr array at a path with name `contig_id`, of shape `(contigs)`, dimension names `[contigs]`, and with dtype `str`. The `contig_id` array plays the same role as the dictionary of contigs in BCF, providing a way of encoding a contig (in the `variant_contig` array) with a (zero-based) integer offset into the `contig_id` array.
+
+Contig lengths are optional, and if present are stored in a one-dimensional Zarr array at a path with name `contig_length`, of shape `(contigs)`, dimension names `[contigs]`, and with dtype `int`.
+
+### Filter information
+
+Filters are stored in a one-dimensional Zarr array at a path with name `filter_id`, of shape `(filters)`, dimension names `[filters]`, and with dtype `str`. Filters must appear in the same order as specified in the header, except for `PASS`, which is always first.
+
 ### Sample information
 
 Sample IDs are stored in a one-dimensional Zarr array at a path with name `sample_id`, of shape `(samples)`, dimension names `[samples]`, and with dtype `str`.
+
+## Changes
+
+### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
+
+* The `contigs` VCF Zarr group attribute was removed and replaced with a `contig_id` array and a `contigs` dimension name.
+* Introduced a `contig_length` array for defining contig sequence lengths. 
+* The `filters` VCF Zarr group attribute was removed and replaced with a `filter_id` array.
