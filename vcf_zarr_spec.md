@@ -53,7 +53,7 @@ Missing values indicate the value is absent, and fill values are used to pad var
 | Dtype     | Missing    | Fill          |
 |-----------|------------|---------------|
 | `int  `   | -1         | -2            |
-| `float  ` | NaN (0x7F800001 32-bit, 0x7FF8000000000001 64-bit) | NaN (0x7F800002 32-bit, 0x7FF0000000000002 64-bit)    |
+| `float  ` | NaN (0x7F800001 32-bit, 0x7FF0000000000001 64-bit) | NaN (0x7F800002 32-bit, 0x7FF0000000000002 64-bit)    |
 | `char`    | "."        | ""            |
 | `str`     | "."        | ""            |
 
