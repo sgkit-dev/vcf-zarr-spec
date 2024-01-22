@@ -86,7 +86,7 @@ For fixed-size Number fields (e.g. Number=2) or unknown (Number=.), the dimensio
 
 ### Fixed fields
 
-The fixed VCF fields `CHROM`, `POS`, `ID`, `REF`, `ALT`, `QUAL`, and `FILTER` are stored as Zarr arrays according to the following table. Note that the `REF` and `ALT` fields are combined into a single Zarr array.
+The fixed VCF fields `CHROM`, `POS`, `ID`, `REF`, `ALT`, `QUAL`, and `FILTER` are stored as Zarr arrays according to the following table. Note that the `REF` and `ALT` fields are combined into a single Zarr array, with the `REF` first.
 
 | VCF field(s) | Zarr array path    | Shape                 | Dimension names       | Dtype   |
 |--------------|--------------------|-----------------------|-----------------------|---------|
