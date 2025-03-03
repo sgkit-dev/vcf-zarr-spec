@@ -85,6 +85,7 @@ The reserved dimension names and their sizes are listed in the following table, 
 | `genotypes`    | The maximum number of genotypes for any record in the VCF.                       | G          |
 | `contigs`      | The number of contigs in the VCF.                                                |            |
 | `filters`      | The number of filters in the VCF.                                                |            |
+| `parents`      | The number of unique parental categories used in the VCF header.                 |            |
 
 For fixed-size Number fields (e.g. Number=2) or unknown (Number=.), the dimension name can be any unique name that is not one of the reserved dimension names.
 
@@ -140,6 +141,7 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 
 * Add an optional top-level attribute for `source`.
 * Clarify type of `vcf_zarr_version` attribute.
+* Add a new `parents` reserved dimension name.
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
