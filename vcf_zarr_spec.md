@@ -154,6 +154,32 @@ The region index must have a row for each distinct contig in each `variants` dim
 * the maximum end position (from `variant_position` combined with `variant_length`)
 * the number of records
 
+#### Example
+
+To illustate how to build a region index, consider the following sample VCF Zarr dataset, which shows only the relevant `variant` fields, plus a chunk index for a chunk size of 3 in the `variants` dimension.
+
+| Chunk index | `variant_contig` | `variant_position` | `variant_length` |
+|-------------|------------------|--------------------|------------------|
+| 0           | 0                | 111                | 1                |
+| 0           | 0                | 112                | 1                |
+| 0           | 1                | 14370              | 1                |
+| 1           | 1                | 17330              | 1                |
+| 1           | 1                | 1110696            | 1                |
+| 1           | 1                | 1230237            | 1                |
+| 2           | 1                | 1234567            | 1                |
+| 2           | 1                | 1235237            | 1                |
+| 2           | 2                | 10                 | 2                |
+
+The corresponding `region_index` array is as follows:
+
+| Chunk index | Contig ID | Start position | End position | Maximum end position | Number of  records |
+|-------------|-----------|----------------|--------------|----------------------|--------------------|
+| 0           | 0         | 111            | 112          | 112                  | 2                  |
+| 0           | 1         | 14370          | 14370        | 14370                | 1                  |
+| 1           | 1         | 17330          | 1230237      | 1230237              | 3                  |
+| 2           | 1         | 1234567        | 1235237      | 1235237              | 2                  |
+| 2           | 2         | 10             | 10           | 11                   | 1                  |
+
 ## Changes
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
