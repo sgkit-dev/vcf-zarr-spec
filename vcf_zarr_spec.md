@@ -1,6 +1,6 @@
 # VCF Zarr specification
 
-***Version 0.2***
+***Version 0.3***
 
 This document is a technical specification for VCF Zarr, a means of encoding VCF data in chunked-columnar form using the Zarr format.
 
@@ -23,7 +23,7 @@ The VCF Zarr store contains the following mandatory attributes:
 
 | Key                | Value                                                                                |
 |--------------------|--------------------------------------------------------------------------------------|
-| `vcf_zarr_version` | `0.2`                                                                                |
+| `vcf_zarr_version` | `0.3`                                                                                |
 | `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
 
 ## VCF Zarr arrays
@@ -129,6 +129,9 @@ Filters are stored in a one-dimensional Zarr array at a path with name `filter_i
 Sample IDs are stored in a one-dimensional Zarr array at a path with name `sample_id`, of shape `(samples)`, dimension names `[samples]`, and with dtype `str`.
 
 ## Changes
+
+### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
+
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
