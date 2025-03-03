@@ -180,6 +180,10 @@ The corresponding `region_index` array is as follows:
 | 2           | 1         | 1234567        | 1235237      | 1235237              | 2                  |
 | 2           | 2         | 10             | 10           | 11                   | 1                  |
 
+Using the region index to perform an overlap query is a two-step process. First, the set of query intervals is matched against the region index intervals (defined by the contig ID, start position, and either the end position or maximum end position, depending on the type of overlap). This gives a list of chunk indexes for the matching chunks, which can then be retrieved for the `variant_contig`, `variant_position`, and `variant_length` arrays before applying a second overlap query on each set of chunks to filter to the precise set of rows that overlap.
+
+For the previous example, the query 1:1-20000 matches the second and third rows of the region index, corresponding to chunk indexes 0 and 1. Applying the same overlap query to each of these chunks returns the third and fourth rows of the original dataset (1:14370 from the first chunk and 1:17330 from the second).
+
 ## Changes
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
