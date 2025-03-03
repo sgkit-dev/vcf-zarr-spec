@@ -23,7 +23,7 @@ The VCF Zarr store contains the following mandatory attributes:
 
 | Key                | Value                                                                                |
 |--------------------|--------------------------------------------------------------------------------------|
-| `vcf_zarr_version` | `0.3`                                                                                |
+| `vcf_zarr_version` | `"0.3"`                                                                              |
 | `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
 
 The following attributes are optional:
@@ -139,6 +139,7 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
 * Add an optional top-level attribute for `source`.
+* Clarify type of `vcf_zarr_version` attribute.
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
