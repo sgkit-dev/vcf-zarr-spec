@@ -26,6 +26,12 @@ The VCF Zarr store contains the following mandatory attributes:
 | `vcf_zarr_version` | `0.3`                                                                                |
 | `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
 
+The following attributes are optional:
+
+| Key      | Value                                                                                   |
+|----------|-----------------------------------------------------------------------------------------|
+| `source` | A string identifying the program (including a version number) writing the VCF Zarr data |
+
 ## VCF Zarr arrays
 
 Each VCF field is stored in a separate Zarr array. This specification only mandates the path, shape, dimension names, and general dtype of each array. Other array metadata, including chunks, compression, layout order is not specified here.
@@ -34,13 +40,13 @@ Each VCF field is stored in a separate Zarr array. This specification only manda
 
 This document uses a shorthand notation to refer to Zarr data types (dtypes). The following table shows the mapping to VCF types.
 
-| Shorthand | Zarr dtypes    | VCF Type  |
-|-----------|----------------|-----------|
-| `bool`    | `\|b1`         | Flag      |
+| Shorthand | Zarr dtypes                                              | VCF Type  |
+|-----------|----------------------------------------------------------|-----------|
+| `bool`    | `\|b1`                                                   | Flag      |
 | `int`     | `<i1`, `<i2`, `<i4`, `<i8` or `>i1`, `>i2`, `>i4`, `>i8` | Integer   |
-| `float`   | `<f4`, `<f8` or `>f4`, `>f8` | Float     |
-| `char`    | `\|S1`         | Character |
-| `str`     | `\|O`          | String    |
+| `float`   | `<f4`, `<f8` or `>f4`, `>f8`                             | Float     |
+| `char`    | `\|S1`                                                   | Character |
+| `str`     | `\|O`                                                    | String    |
 
 This specification does not mandate a byte order for numeric types: little-endian (e.g. `<i4`) or big-endian (`>i4`) are both permitted.
 
@@ -50,12 +56,12 @@ The `str` dtype is used to represent [variable-length strings](https://zarr.read
 
 Missing values indicate the value is absent, and fill values are used to pad variable length fields. The following float values are based on the "signalling NaN" values used in BCF. Note that the BCF specification refers to fill values as "END_OF_VECTOR" values.
 
-| Dtype     | Missing    | Fill          |
-|-----------|------------|---------------|
-| `int  `   | -1         | -2            |
-| `float  ` | NaN (0x7F800001 32-bit, 0x7FF0000000000001 64-bit) | NaN (0x7F800002 32-bit, 0x7FF0000000000002 64-bit)    |
-| `char`    | "."        | ""            |
-| `str`     | "."        | ""            |
+| Dtype     | Missing                                            | Fill                                               |
+|-----------|----------------------------------------------------|----------------------------------------------------|
+| `int  `   | -1                                                 | -2                                                 |
+| `float  ` | NaN (0x7F800001 32-bit, 0x7FF0000000000001 64-bit) | NaN (0x7F800002 32-bit, 0x7FF0000000000002 64-bit) |
+| `char`    | "."                                                | ""                                                 |
+| `str`     | "."                                                | ""                                                 |
 
 There is no need for missing or fill values for the `bool` dtype, since Type=Flag fields can only appear in INFO fields, and they always have Number=0.
 
@@ -69,16 +75,16 @@ Following [Xarray conventions](http://xarray.pydata.org/en/stable/internals/zarr
 
 The reserved dimension names and their sizes are listed in the following table, along with the corresponding VCF Number value, if applicable.
 
-| Dimension name | Size                              | VCF Number |
-|----------------|-----------------------------------|------------|
-| `variants`     | The number of records in the VCF. | |
-| `samples`      | The number of samples in the VCF. | |
-| `ploidy`       | The maximum ploidy for any record in the VCF. | |
-| `alleles`      | The maximum number of alleles for any record in the VCF. | R |
-| `alt_alleles`  | The maximum number of alternate non-reference alleles for any record in the VCF. | A |
-| `genotypes`    | The maximum number of genotypes for any record in the VCF. | G |
-| `contigs`      | The number of contigs in the VCF. | |
-| `filters`      | The number of filters in the VCF. | |
+| Dimension name | Size                                                                             | VCF Number |
+|----------------|----------------------------------------------------------------------------------|------------|
+| `variants`     | The number of records in the VCF.                                                |            |
+| `samples`      | The number of samples in the VCF.                                                |            |
+| `ploidy`       | The maximum ploidy for any record in the VCF.                                    |            |
+| `alleles`      | The maximum number of alleles for any record in the VCF.                         | R          |
+| `alt_alleles`  | The maximum number of alternate non-reference alleles for any record in the VCF. | A          |
+| `genotypes`    | The maximum number of genotypes for any record in the VCF.                       | G          |
+| `contigs`      | The number of contigs in the VCF.                                                |            |
+| `filters`      | The number of filters in the VCF.                                                |            |
 
 For fixed-size Number fields (e.g. Number=2) or unknown (Number=.), the dimension name can be any unique name that is not one of the reserved dimension names.
 
@@ -132,6 +138,7 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
+* Add an optional top-level attribute for `source`.
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
