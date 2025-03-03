@@ -131,6 +131,8 @@ Contig lengths are optional, and if present are stored in a one-dimensional Zarr
 
 Filters are stored in a one-dimensional Zarr array at a path with name `filter_id`, of shape `(filters)`, dimension names `[filters]`, and with dtype `str`. Filters must appear in the same order as specified in the header, except for `PASS`, which is always first.
 
+Filter descriptions are stored in a one-dimensional Zarr array at a path with name `filter_description`, of shape `(filters)`, dimension names `[filters]`, and with dtype `str`.
+
 ### Sample information
 
 Sample IDs are stored in a one-dimensional Zarr array at a path with name `sample_id`, of shape `(samples)`, dimension names `[samples]`, and with dtype `str`.
@@ -142,6 +144,7 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 * Add an optional top-level attribute for `source`.
 * Clarify type of `vcf_zarr_version` attribute.
 * Add a new `parents` reserved dimension name.
+* Add `filter_description` field.
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
