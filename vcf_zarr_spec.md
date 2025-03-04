@@ -143,6 +143,8 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 
 To support efficient queries over variant regions, an optional two-dimensional Zarr array representing a region index may be stored at a path with name `region_index`, of shape `(region_index_values, region_index_fields)`, dimension names `[region_index_values, region_index_fields]`, and with the same `int` dtype as `variant_position`.
 
+If `region_index` is present, the BCF `rlen` field is stored in a one-dimensional Zarr array at a path with name `variant_length`, of shape `(variants)`, dimension names `[variants]`, and with dtype `int`.
+
 All Zarr arrays with a `variants` dimension must have the same chunk size in this dimension.
 
 The region index must have a row for each distinct contig in each `variants` dimension chunk. The following properties of these chunk-contig pairs are stored as values in this column order:
