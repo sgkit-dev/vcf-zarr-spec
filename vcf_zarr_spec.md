@@ -139,7 +139,9 @@ Filter descriptions are stored in a one-dimensional Zarr array at a path with na
 
 Sample IDs are stored in a one-dimensional Zarr array at a path with name `sample_id`, of shape `(samples)`, dimension names `[samples]`, and with dtype `str`.
 
-### Region index
+### Region index [experimental]
+
+*This section is experimental and may be subject to change.*
 
 To support efficient queries over variant regions, an optional two-dimensional Zarr array representing a region index may be stored at a path with name `region_index`, of shape `(region_index_values, region_index_fields)`, dimension names `[region_index_values, region_index_fields]`, and with the same `int` dtype as `variant_position`.
 
