@@ -75,17 +75,19 @@ Following [Xarray conventions](http://xarray.pydata.org/en/stable/internals/zarr
 
 The reserved dimension names and their sizes are listed in the following table, along with the corresponding VCF Number value, if applicable.
 
-| Dimension name | Size                                                                             | VCF Number |
-|----------------|----------------------------------------------------------------------------------|------------|
-| `variants`     | The number of records in the VCF.                                                |            |
-| `samples`      | The number of samples in the VCF.                                                |            |
-| `ploidy`       | The maximum ploidy for any record in the VCF.                                    |            |
-| `alleles`      | The maximum number of alleles for any record in the VCF.                         | R          |
-| `alt_alleles`  | The maximum number of alternate non-reference alleles for any record in the VCF. | A          |
-| `genotypes`    | The maximum number of genotypes for any record in the VCF.                       | G          |
-| `contigs`      | The number of contigs in the VCF.                                                |            |
-| `filters`      | The number of filters in the VCF.                                                |            |
-| `parents`      | The number of unique parental categories used in the VCF header.                 |            |
+| Dimension name        | Size                                                                             | VCF Number |
+|-----------------------|----------------------------------------------------------------------------------|------------|
+| `variants`            | The number of records in the VCF.                                                |            |
+| `samples`             | The number of samples in the VCF.                                                |            |
+| `ploidy`              | The maximum ploidy for any record in the VCF.                                    |            |
+| `alleles`             | The maximum number of alleles for any record in the VCF.                         | R          |
+| `alt_alleles`         | The maximum number of alternate non-reference alleles for any record in the VCF. | A          |
+| `genotypes`           | The maximum number of genotypes for any record in the VCF.                       | G          |
+| `contigs`             | The number of contigs in the VCF.                                                |            |
+| `filters`             | The number of filters in the VCF.                                                |            |
+| `parents`             | The number of unique parental categories used in the VCF header.                 |            |
+| `region_index_values` | The number of chunks in the `variant_position` Zarr array.                       |            |
+| `region_index_fields` | The number of fields in the index (6).                                           |            |
 
 For fixed-size Number fields (e.g. Number=2) or unknown (Number=.), the dimension name can be any unique name that is not one of the reserved dimension names.
 
@@ -137,6 +139,55 @@ Filter descriptions are stored in a one-dimensional Zarr array at a path with na
 
 Sample IDs are stored in a one-dimensional Zarr array at a path with name `sample_id`, of shape `(samples)`, dimension names `[samples]`, and with dtype `str`.
 
+### Region index [experimental]
+
+*This section is experimental and may be subject to change.*
+
+To support efficient queries over variant regions, an optional two-dimensional Zarr array representing a region index may be stored at a path with name `region_index`, of shape `(region_index_values, region_index_fields)`, dimension names `[region_index_values, region_index_fields]`, and with the same `int` dtype as `variant_position`.
+
+If `region_index` is present, the BCF `rlen` field is stored in a one-dimensional Zarr array at a path with name `variant_length`, of shape `(variants)`, dimension names `[variants]`, and with dtype `int`.
+
+All Zarr arrays with a `variants` dimension must have the same chunk size in this dimension.
+
+The region index must have a row for each distinct contig in each `variants` dimension chunk. The following properties of these chunk-contig pairs are stored as values in this column order:
+
+* the `variants` dimension chunk index (zero-based)
+* the contig ID (from `variant_contig`)
+* the start position (from `variant_position`)
+* the end position (from `variant_position`)
+* the maximum end position (from `variant_position` combined with `variant_length`)
+* the number of records
+
+#### Example
+
+To illustate how to build a region index, consider the following sample VCF Zarr dataset, which shows only the relevant `variant` fields, plus a chunk index for a chunk size of 3 in the `variants` dimension.
+
+| Chunk index | `variant_contig` | `variant_position` | `variant_length` |
+|-------------|------------------|--------------------|------------------|
+| 0           | 0                | 111                | 1                |
+| 0           | 0                | 112                | 1                |
+| 0           | 1                | 14370              | 1                |
+| 1           | 1                | 17330              | 1                |
+| 1           | 1                | 1110696            | 1                |
+| 1           | 1                | 1230237            | 1                |
+| 2           | 1                | 1234567            | 1                |
+| 2           | 1                | 1235237            | 1                |
+| 2           | 2                | 10                 | 2                |
+
+The corresponding `region_index` array is as follows:
+
+| Chunk index | Contig ID | Start position | End position | Maximum end position | Number of  records |
+|-------------|-----------|----------------|--------------|----------------------|--------------------|
+| 0           | 0         | 111            | 112          | 112                  | 2                  |
+| 0           | 1         | 14370          | 14370        | 14370                | 1                  |
+| 1           | 1         | 17330          | 1230237      | 1230237              | 3                  |
+| 2           | 1         | 1234567        | 1235237      | 1235237              | 2                  |
+| 2           | 2         | 10             | 10           | 11                   | 1                  |
+
+Using the region index to perform an overlap query is a two-step process. First, the set of query intervals is matched against the region index intervals (defined by the contig ID, start position, and either the end position or maximum end position, depending on the type of overlap). This gives a list of chunk indexes for the matching chunks, which can then be retrieved for the `variant_contig`, `variant_position`, and `variant_length` arrays before applying a second overlap query on each set of chunks to filter to the precise set of rows that overlap.
+
+For the previous example, the query 1:1-20000 matches the second and third rows of the region index, corresponding to chunk indexes 0 and 1. Applying the same overlap query to each of these chunks returns the third and fourth rows of the original dataset (1:14370 from the first chunk and 1:17330 from the second).
+
 ## Changes
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
@@ -145,6 +196,7 @@ Sample IDs are stored in a one-dimensional Zarr array at a path with name `sampl
 * Clarify type of `vcf_zarr_version` attribute.
 * Add a new `parents` reserved dimension name.
 * Add `filter_description` field.
+* Add `region_index`.
 
 ### Changes between VCF Zarr 0.1 and VCF Zarr 0.2
 
