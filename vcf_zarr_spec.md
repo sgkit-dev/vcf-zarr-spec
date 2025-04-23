@@ -45,7 +45,7 @@ This document uses a shorthand notation to refer to Zarr data types (dtypes). Th
 | `bool`    | `\|b1`                                                   | Flag      |
 | `int`     | `<i1`, `<i2`, `<i4`, `<i8` or `>i1`, `>i2`, `>i4`, `>i8` | Integer   |
 | `float`   | `<f4`, `<f8` or `>f4`, `>f8`                             | Float     |
-| `char`    | `\|S1`                                                   | Character |
+| `char`    | `\<U1` or `\>U1`                                         | Character |
 | `str`     | `\|O`                                                    | String    |
 
 This specification does not mandate a byte order for numeric types: little-endian (e.g. `<i4`) or big-endian (`>i4`) are both permitted.
@@ -191,6 +191,8 @@ For the previous example, the query 1:1-20000 matches the second and third rows 
 ## Changes
 
 ### Changes between VCF Zarr 0.3 and VCF Zarr 0.4
+
+* Change `Character` dtype to `U1`.
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
