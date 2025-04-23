@@ -24,7 +24,6 @@ The VCF Zarr store contains the following mandatory attributes:
 | Key                | Value                                                                                |
 |--------------------|--------------------------------------------------------------------------------------|
 | `vcf_zarr_version` | `"0.4"`                                                                              |
-| `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
 
 The following attributes are optional:
 
@@ -193,6 +192,7 @@ For the previous example, the query 1:1-20000 matches the second and third rows 
 ### Changes between VCF Zarr 0.3 and VCF Zarr 0.4
 
 * Change `Character` dtype to `U1`.
+* Remove the mandatory `vcf_header` attribute.
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
