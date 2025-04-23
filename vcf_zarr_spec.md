@@ -1,6 +1,6 @@
 # VCF Zarr specification
 
-***Version 0.3***
+***Version 0.4***
 
 This document is a technical specification for VCF Zarr, a means of encoding VCF data in chunked-columnar form using the Zarr format.
 
@@ -23,7 +23,7 @@ The VCF Zarr store contains the following mandatory attributes:
 
 | Key                | Value                                                                                |
 |--------------------|--------------------------------------------------------------------------------------|
-| `vcf_zarr_version` | `"0.3"`                                                                              |
+| `vcf_zarr_version` | `"0.4"`                                                                              |
 | `vcf_header`       | The VCF header from `##fileformat` to `#CHROM` inclusive, stored as a single string. |
 
 The following attributes are optional:
@@ -189,6 +189,8 @@ Using the region index to perform an overlap query is a two-step process. First,
 For the previous example, the query 1:1-20000 matches the second and third rows of the region index, corresponding to chunk indexes 0 and 1. Applying the same overlap query to each of these chunks returns the third and fourth rows of the original dataset (1:14370 from the first chunk and 1:17330 from the second).
 
 ## Changes
+
+### Changes between VCF Zarr 0.3 and VCF Zarr 0.4
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
