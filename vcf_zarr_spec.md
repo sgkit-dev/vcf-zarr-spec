@@ -27,9 +27,12 @@ The VCF Zarr store contains the following mandatory attributes:
 
 The following attributes are optional:
 
-| Key      | Value                                                                                   |
-|----------|-----------------------------------------------------------------------------------------|
-| `source` | A string identifying the program (including a version number) writing the VCF Zarr data |
+| Key                    | Value                                                                                   |
+|------------------------|-----------------------------------------------------------------------------------------|
+| `source`               | A string identifying the program (including a version number) writing the VCF Zarr data |
+| `vcf_meta_information` | A list of key-value pairs for VCF meta-information lines                                |
+
+The `vcf_meta_information` attribute can be used for storing VCF header fields that are not covered in other parts of this specification. In particular, INFO and FORMAT fields, and contig and filter information should not be stored in `vcf_meta_information`.
 
 ## VCF Zarr arrays
 
@@ -192,7 +195,7 @@ For the previous example, the query 1:1-20000 matches the second and third rows 
 ### Changes between VCF Zarr 0.3 and VCF Zarr 0.4
 
 * Change `Character` dtype to `U1`.
-* Remove the mandatory `vcf_header` attribute.
+* Remove the mandatory `vcf_header` attribute, and replace with the optional `vcf_meta_information` attribute for storing non-redundant VCF meta-infomation lines.
 
 ### Changes between VCF Zarr 0.2 and VCF Zarr 0.3
 
