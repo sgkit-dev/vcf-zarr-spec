@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+title: "VCF Zarr specification"
+doi: 10.1093/gigascience/giaf049
+url: "https://github.com/sgkit-dev/vcf-zarr-spec"
+
+preferred-citation:
+  type: article
+  title: "Analysis-ready VCF at Biobank scale using Zarr"
+  journal: "GigaScience"
+  volume: 14
+  year: 2025
+  doi: 10.1093/gigascience/giaf049
+  authors:
+    - family-names: Czech
+      given-names: Eric
+    - family-names: Tyler
+      given-names: Will
+    - family-names: White
+      given-names: Tom
+    - family-names: Jeffery
+      given-names: Ben
+    - family-names: Millar
+      given-names: Timothy R
+    - family-names: Elsworth
+      given-names: Benjamin
+    - family-names: Guez
+      given-names: Jérémy
+    - family-names: Hancox
+      given-names: Jonny
+    - family-names: Karczewski
+      given-names: Konrad J
+    - family-names: Miles
+      given-names: Alistair
+    - family-names: Tallman
+      given-names: Sam
+    - family-names: Unneberg
+      given-names: Per
+    - family-names: Wojdyla
+      given-names: Rafal
+    - family-names: Zabad
+      given-names: Shadi
+    - family-names: Hammerbacher
+      given-names: Jeff
+    - family-names: Kelleher
+      given-names: Jerome
