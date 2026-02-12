@@ -5,7 +5,7 @@
 This document is a technical specification for VCF Zarr, a means of encoding VCF data in chunked-columnar form using the Zarr format.
 
 This specification depends on definitions and terminology from [The Variant Call Format Specification, VCFv4.3 and BCFv2.2](https://samtools.github.io/hts-specs/VCFv4.3.pdf),
-and [Zarr storage specification version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html).
+and [Zarr storage specification version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) or [Zarr core specification version 3](https://zarr-specs.readthedocs.io/en/latest/v3/core/index.html) [experimental].
 
 ## Compatibility with VCF and BCF
 
@@ -42,17 +42,19 @@ Each VCF field is stored in a separate Zarr array. This specification only manda
 
 This document uses a shorthand notation to refer to Zarr data types (dtypes). The following table shows the mapping to VCF types.
 
-| Shorthand | Zarr dtypes                                              | VCF Type  |
-|-----------|----------------------------------------------------------|-----------|
-| `bool`    | `\|b1`                                                   | Flag      |
-| `int`     | `<i1`, `<i2`, `<i4`, `<i8` or `>i1`, `>i2`, `>i4`, `>i8` | Integer   |
-| `float`   | `<f4`, `<f8` or `>f4`, `>f8`                             | Float     |
-| `char`    | `\<U1` or `\>U1`                                         | Character |
-| `str`     | `\|O`                                                    | String    |
+| Shorthand | Zarr 2 data types                                        | Zarr 3 data types                 | VCF Type  |
+|-----------|----------------------------------------------------------|-----------------------------------|-----------|
+| `bool`    | `\|b1`                                                   | `bool`                            | Flag      |
+| `int`     | `<i1`, `<i2`, `<i4`, `<i8` or `>i1`, `>i2`, `>i4`, `>i8` | `int8`, `int16`, `int32`, `int64` | Integer   |
+| `float`   | `<f4`, `<f8` or `>f4`, `>f8`                             | `float32`, `float64`              | Float     |
+| `char`    | `\<U1` or `\>U1`                                         | `string`                          | Character |
+| `str`     | `\|O`                                                    | `string`                          | String    |
 
 This specification does not mandate a byte order for numeric types: little-endian (e.g. `<i4`) or big-endian (`>i4`) are both permitted.
 
-The `str` dtype is used to represent [variable-length strings](https://zarr.readthedocs.io/en/stable/tutorial.html#string-arrays). In this case a Zarr array filter with and `id` of `vlen-utf8` must be specified for the array.
+*[Zarr 2 only]* The `str` dtype is used to represent [variable-length strings](https://zarr.readthedocs.io/en/stable/tutorial.html#string-arrays). In this case a Zarr array filter with and `id` of `vlen-utf8` must be specified for the array.
+
+*[Zarr 3 only]* The `str` dtype is used to represent [variable-length strings](https://github.com/zarr-developers/zarr-extensions/tree/main/data-types/string). In this case a Zarr array [`vlen-utf8`](https://github.com/zarr-developers/zarr-extensions/blob/main/codecs/vlen-utf8/README.md) codec must be specified for the array.
 
 ### Missing and fill values
 
@@ -73,7 +75,9 @@ An array called `<name>` may have an accompanying array called `<name>_mask` wit
 
 ### Array dimension names
 
-Following [Xarray conventions](http://xarray.pydata.org/en/stable/internals/zarr-encoding-spec.html), each Zarr array has an attribute `_ARRAY_DIMENSIONS`, which is a list of strings naming the dimensions.
+*[Zarr 2 only]* Following [Xarray conventions](http://xarray.pydata.org/en/stable/internals/zarr-encoding-spec.html), each Zarr array has an attribute `_ARRAY_DIMENSIONS`, which is a list of strings naming the dimensions.
+
+*[Zarr 3 only]* The Zarr array metadata must include `dimension_names`, which is a list of strings naming the dimensions.
 
 The reserved dimension names and their sizes are listed in the following table, along with the corresponding VCF Number value, if applicable.
 
