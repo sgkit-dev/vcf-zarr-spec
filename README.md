@@ -15,6 +15,8 @@ https://doi.org/10.1101/2024.06.11.598241
 To convert a VCF file to VCF Zarr, see
 [vcf2zarr](https://sgkit-dev.github.io/bio2zarr/vcf2zarr/overview.html).
 
+To validate VCF Zarr stores comply with this specification, see [vcz-validator](https://github.com/tomwhite/vcz-validator).
+
 An implementation of this specification can be found in
 [sgkit](https://pystatgen.github.io/sgkit/).
 
